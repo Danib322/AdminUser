@@ -1,6 +1,10 @@
+using AdminUser.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +28,32 @@ namespace AdminUser
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            string cadena = this.Configuration.GetConnectionString("dbconn");
+            services.AddDbContext<RentCarContext>(options => options.UseSqlServer(cadena));
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(50);
+            });
+            services.AddDistributedMemoryCache();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
+            {
+                config.AccessDeniedPath = "/Manage/ErrorAcceso";
+            });
+
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
+            services.AddControllersWithViews(options => options.EnableEndpointRouting = false).AddSessionStateTempDataProvider();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ADMINISTRADORES", policy => policy.RequireRole("ADMIN"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +74,11 @@ namespace AdminUser
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
