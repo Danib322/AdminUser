@@ -1,3 +1,4 @@
+using AdminUser.Controllers;
 using AdminUser.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,7 @@ namespace AdminUser
             services.AddControllersWithViews();
             string cadena = this.Configuration.GetConnectionString("dbconn");
             services.AddDbContext<RentCarContext>(options => options.UseSqlServer(cadena));
+            services.AddTransient<UserManager>();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(50);
