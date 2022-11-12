@@ -21,6 +21,8 @@ namespace AdminUser.Controllers
 
         public IActionResult LogIn()
         {
+            ViewBag.usuario = HttpContext.User.Identity.IsAuthenticated;
+            
             return View();
         }
 

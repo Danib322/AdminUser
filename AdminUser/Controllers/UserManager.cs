@@ -53,9 +53,8 @@ namespace AdminUser.Controllers
             }
             else
             {
-                int idusuario = this.GetMaxIdUsuario();
+                
                 Usuario usuario = new Usuario();
-                usuario.UsuarioId = idusuario;
                 usuario.Email = email;
                 usuario.Nombre = nombre;
                 usuario.Apellido = apellido;
@@ -64,6 +63,7 @@ namespace AdminUser.Controllers
                 usuario.Salt = HelperCryptography.GenerateSalt();
                 //GENERAMOS SU PASSWORD CON EL SALT
                 usuario.Pass = HelperCryptography.EncriptarPassword(password, usuario.Salt);
+                usuario.pwd = password;
                 this.context.Usuario.Add(usuario);
                 this.context.SaveChanges();
 
@@ -83,11 +83,9 @@ namespace AdminUser.Controllers
                 //Debemos comparar con la base de datos el password haciendo de nuevo el cifrado con cada salt de usuario
                 byte[] passUsuario = usuario.Pass;
                 string salt = usuario.Salt;
-                //Ciframos de nuevo para comparar
-                byte[] temporal = HelperCryptography.EncriptarPassword(password, salt);
-
-                //Comparamos los arrays para comprobar si el cifrado es el mismo
-                bool respuesta = HelperCryptography.compareArrays(passUsuario, temporal);
+              
+                bool respuesta = HelperCryptography.ValidarPassword(password, usuario);
+                
                 if (respuesta == true)
                 {
                     return usuario;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdminUser.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -47,7 +48,7 @@ namespace AdminUser.Util
 
         public static byte[] EncriptarPassword(string password, string salt)
         {
-            string contenido = password + salt;
+            string contenido = password;
             SHA256Managed sha = new SHA256Managed();
             byte[] salida = Encoding.UTF8.GetBytes(contenido);
             for (int i = 1; i <= 107; i++)
@@ -58,5 +59,20 @@ namespace AdminUser.Util
             return salida;
 
         }
+
+        public static bool ValidarPassword(string password, Usuario usr) 
+        {
+            bool respuesta;
+            var pass = usr.pwd;
+            if (password == pass)
+            {
+                respuesta = true;
+            }
+            else { respuesta = false; }
+               
+            return respuesta;
+        }
+        
     }
+
 }

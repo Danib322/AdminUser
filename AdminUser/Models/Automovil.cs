@@ -21,6 +21,7 @@ namespace AdminUser.Models
         public string Observaciones { get; set; }
         public bool EstaDisponible { get; set; }
 
+        public string Modelo { get; set; }
         public virtual Categoria Categoria { get; set; }
         public virtual ICollection<Reserva> Reserva { get; set; }
     }
