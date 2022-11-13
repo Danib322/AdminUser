@@ -1,0 +1,55 @@
+﻿@model IEnumerable<AdminUser.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Categorias</h1>
+
+<p>
+    @{
+
+        if (ViewBag.usuario)
+        {
+            <a asp-action="Create">Create New</a>
+        }
+    }
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor)
+            </td>
+            @{
+                if (ViewBag.usuario) 
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.CategoriaId">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.CategoriaId">Delete</a>
+                    </td>
+                }
+                <td>
+                        <a asp-action="Details" asp-route-id="@item.CategoriaId">Details</a> 
+                </td>
+            }
+        </tr>
+}
+    </tbody>
+</table>
