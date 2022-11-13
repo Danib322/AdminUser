@@ -18,11 +18,10 @@
     los sistemas de gestion e inicio de seciones adicional de la motivacion de profundizar en las tecnologias de C# y .Net Core 
 </p>
 <h1>Instrucciones del proyecto</h1>
-<p>
-    1. Clonar el repositorio en la carptea donde se desea almacenar el proyecto con le comanod de git git-clone 'Url' del proyecto
+<p> 1. Clonar el repositorio en la carptea donde se desea almacenar el proyecto con le comanod de git git-clone 'Url' del proyecto </p>
     
-    2. configurar el entorno de trabajo para desplegar la solución, teniendo en cuenta la version de framework utilizada asi como los paquetes Nuget implementados
+<p> 2. configurar el entorno de trabajo para desplegar la solución, teniendo en cuenta la version de framework utilizada asi como los paquetes Nuget implementados</p>
     
-    3. Es necesario disponer de la ultima version estable de sql server y de de Visual studio code para poder ejecutar el proyecto 
+<p>3. Es necesario disponer de la ultima version estable de sql server y de de Visual studio code para poder ejecutar el proyecto </p> 
     
-</p>
+
