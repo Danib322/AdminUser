@@ -26,7 +26,11 @@ namespace AdminUser.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=MSI\\SQLEXPRESS; Database=RentCar; Trusted_Connection=True;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,6 +45,11 @@ namespace AdminUser.Models
                 entity.Property(e => e.Marca)
                     .IsRequired()
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Modelo)
+                    .IsRequired()
+                    .HasMaxLength(200)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Observaciones)
@@ -113,6 +122,12 @@ namespace AdminUser.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Pass).IsRequired();
+
+                entity.Property(e => e.pwd)
+                    .IsRequired()
+                    .HasColumnName("pwd")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Salt)
                     .IsRequired()

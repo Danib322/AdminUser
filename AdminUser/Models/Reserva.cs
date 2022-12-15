@@ -14,6 +14,7 @@ namespace AdminUser.Models
         public int AutoId { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
+        public bool? EsActiva { get; set; }
 
         public virtual Automovil Auto { get; set; }
         public virtual Usuario Usuario { get; set; }

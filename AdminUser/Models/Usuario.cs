@@ -21,8 +21,8 @@ namespace AdminUser.Models
         public byte[] Pass { get; set; }
         public string Salt { get; set; }
         public string Tipo { get; set; }
-
         public string pwd { get; set; }
+
         public virtual ICollection<Reserva> Reserva { get; set; }
     }
 }
