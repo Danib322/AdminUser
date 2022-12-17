@@ -1,0 +1,56 @@
+﻿@model AdminUser.Models.InformeModel
+
+@{
+    ViewData["Title"] = "TopReservas";
+}
+
+<div class="row">
+    <div class=" col-md-6">
+        <h1>Autos más rentados</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Autos
+                    </th>
+                    <th>
+                        Cantidad Reservas
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Autos)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Modelo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumeroDeReservas)
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h1>Categoria más rentada</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>
+                        <h3>@ViewBag.TopCategorias </h3>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -37,13 +37,48 @@ namespace AdminUser.Controllers
             var rentCarContext = _context.Reserva.Include(r => r.Auto).Include(r => r.Usuario);
             return View(await rentCarContext.ToListAsync());
         }
+        // GET: Reservas
+        [AuthorizeUsers]
+        public async Task<IActionResult> TopReservas()
+        {
+            
+            var contexto = (from r in _context.Reserva
+                            join a in _context.Automovil on r.AutoId equals a.AutoId
+                            join c in _context.Categoria on a.CategoriaId equals c.CategoriaId
+                            select new
+                            {
+                                modelo = a.Modelo,
+                                idauto =  r.AutoId,
+                                descripcion = c.Descripcion
+                             }).ToList();
+            var listaId = contexto.Select(r => r.idauto).Distinct().ToList();
+            var modelo = new InformeModel();
+            foreach (var item in listaId)
+            {
+                var count = contexto.Where(a => a.idauto == item).Count();
+                var Auto = new AutoInforme();
+                Auto.NumeroDeReservas = count;
+                var AutoSelect = contexto.Where(a => a.idauto == item).FirstOrDefault();
+                Auto.Modelo = AutoSelect.modelo;
+                Auto.categoriaTop = AutoSelect.descripcion;              
+                modelo.Autos.Add(Auto);
+
+            }
+            var categoria = modelo.Autos.Select(c => c.categoriaTop).Distinct().FirstOrDefault();
+            ViewBag.TopCategorias = categoria;
+            modelo.Autos= modelo.Autos.OrderByDescending(a => a.NumeroDeReservas).ToList();
+            return View(modelo);
+
+        }
 
         [AuthorizeUsers]
         public async Task<IActionResult> UsuariosReserve()
         {
 
             var usuarioId = getUsuarioId();
-            var rentCarContext = _context.Reserva.Where(r => r.UsuarioId == usuarioId && r.EsActiva == true).Include(r => r.Auto).Include(r => r.Usuario);
+            var rentCarContext = _context.Reserva.Where(r => r.UsuarioId == usuarioId && r.EsActiva == true)
+                                                 .Include(r => r.Auto)
+                                                 .Include(r => r.Usuario);
             return View(await rentCarContext.ToListAsync());
         }
 
@@ -72,7 +107,7 @@ namespace AdminUser.Controllers
         [AuthorizeUsers]
         public IActionResult Create()
         {
-            ViewData["AutoId"] = new SelectList(_context.Automovil.Where(a => a.EstaDisponible == true), "AutoId", "Marca");
+            ViewData["AutoId"] = new SelectList(_context.Automovil.Where(a => a.EstaDisponible == true), "AutoId", "Modelo");
             ViewData["UsuarioId"] = new SelectList(_context.Usuario, "UsuarioId", "Apellido");
             return View();
         }
@@ -150,6 +185,7 @@ namespace AdminUser.Controllers
                 {
                     var usuarioId = getUsuarioId();
                     reserva.UsuarioId = usuarioId;
+                    reserva.EsActiva = true;
                     _context.Update(reserva);
                     await _context.SaveChangesAsync();
                 }
@@ -199,14 +235,19 @@ namespace AdminUser.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var reserva = await _context.Reserva.FindAsync(id);
+            var EstadoAuto = _context.Automovil.Where(a => a.AutoId == reserva.AutoId).FirstOrDefault();
+            EstadoAuto.EstaDisponible = true;
+            _context.Update(EstadoAuto);
             _context.Reserva.Remove(reserva);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(UsuariosReserve));
         }
         // GET: Reservas/EntregaVehiculo/5
         [AuthorizeUsers]
         public async Task<IActionResult> EntregaVehiculo(int? id)
         {
+            
+
             if (id == null)
             {
                 return NotFound();
@@ -216,6 +257,18 @@ namespace AdminUser.Controllers
                 .Include(r => r.Auto)
                 .Include(r => r.Usuario)
                 .FirstOrDefaultAsync(m => m.ReservaId == id);
+            
+            var CategoriaAuto =_context.Categoria.Where(c => c.CategoriaId == reserva.Auto.CategoriaId).FirstOrDefault();
+           
+            var FechaInicial = reserva.FechaInicio;
+            var FechaFin = Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"));
+            TimeSpan IntervaloDias = FechaFin - FechaInicial;
+            int Numerodias = IntervaloDias.Days;
+            ViewBag.IntervaloDias = Numerodias;
+            ViewBag.CategoriaAutos = CategoriaAuto.Valor;
+            ViewBag.PrecioReserva = CategoriaAuto.Valor * Numerodias;
+            
+
             if (reserva == null)
             {
                 return NotFound();

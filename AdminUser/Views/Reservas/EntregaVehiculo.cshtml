@@ -36,7 +36,14 @@
             @Html.DisplayFor(model => model.Usuario.Apellido)
         </dd>
     </dl>
-
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Numero de dias Utilizado el coche : @ViewBag.IntervaloDias</h3>
+            <h3>Valor de la categoria : $ @ViewBag.CategoriaAutos </h3>
+            <h3>El valor que debes cancelar por tu reserva es de : $ @ViewBag.PrecioReserva</h3>    
+            
+        </div>
+    </div>
     <form asp-action="EntregaVehiculo">
         <input type="hidden" asp-for="ReservaId" />
         <input type="submit" value="Entregar" class="btn btn-danger" /> |

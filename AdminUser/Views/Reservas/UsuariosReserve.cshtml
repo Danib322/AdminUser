@@ -17,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.Auto)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Usuario)
+                Acciones disponibles
             </th>
             <th></th>
         </tr>
@@ -33,10 +33,7 @@
                     @Html.DisplayFor(modelItem => item.FechaFin)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Auto.Marca)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Usuario.Apellido)
+                    @Html.DisplayFor(modelItem => item.Auto.Modelo)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ReservaId">EDITAR</a> |

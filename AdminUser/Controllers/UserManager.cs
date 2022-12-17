@@ -58,7 +58,7 @@ namespace AdminUser.Controllers
                 usuario.Email = email;
                 usuario.Nombre = nombre;
                 usuario.Apellido = apellido;
-                usuario.Tipo = tipo;
+                usuario.Tipo = "USUARIO";
                 //GENERAMOS UN SALT ALEATORIO PARA CADA USUARIO
                 usuario.Salt = HelperCryptography.GenerateSalt();
                 //GENERAMOS SU PASSWORD CON EL SALT
