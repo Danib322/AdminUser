@@ -70,6 +70,49 @@ namespace AdminUser.Controllers
             return View(modelo);
 
         }
+        // GET: Reservas
+        [AuthorizeUsers]
+        public async Task<IActionResult> ReporteCategorias( DateTime FechaInicio, DateTime FechaFin)
+        {
+              
+            var contexto = (from r in _context.Reserva
+                            join a in _context.Automovil on r.AutoId equals a.AutoId
+                            join c in _context.Categoria on a.CategoriaId equals c.CategoriaId
+                            select new
+                            {
+                                modelo = a.Modelo,
+                                idCategoria = c.CategoriaId,
+                                descripcion = c.Descripcion
+                            }).ToList();
+
+            if (FechaInicio != DateTime.Parse("01/01/0001 0:00:00") || FechaFin != DateTime.Parse("01/01/0001 0:00:00"))
+            {
+                contexto = (from r in _context.Reserva.Where(r => r.FechaInicio >= FechaInicio && r.FechaInicio <= FechaFin)
+                              join a in _context.Automovil on r.AutoId equals a.AutoId
+                              join c in _context.Categoria on a.CategoriaId equals c.CategoriaId
+                              select new
+                              {
+                                  modelo = a.Modelo,
+                                  idCategoria = c.CategoriaId,
+                                  descripcion = c.Descripcion
+                              }).ToList();
+            }
+
+            var listaId = contexto.Select(r => r.idCategoria).Distinct().ToList();
+            var modelo = new reporteCategorias();
+            foreach (var obj in listaId)
+            {
+                var Contador = contexto.Where(c => c.idCategoria == obj).Count();
+                var categoria = new CategoriaInforme();
+                categoria.NumeroDeReservas = Contador;
+                var CategoriaSelect = contexto.Where(c => c.idCategoria == obj).FirstOrDefault();
+                categoria.categoria = CategoriaSelect.descripcion;
+                modelo.ListaCategoria.Add(categoria);
+            }
+            modelo.ListaCategoria = modelo.ListaCategoria.OrderByDescending(c => c.NumeroDeReservas).ToList();
+            return View(modelo);
+
+        }
 
         [AuthorizeUsers]
         public async Task<IActionResult> UsuariosReserve()
